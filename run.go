@@ -11,6 +11,8 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+const name = "tr"
+
 // Error is the sentinel error type for the yup-tr wrapper. It lets every
 // error path this package raises be matched with errors.Is.
 type Error string
@@ -50,7 +52,7 @@ func run(version string, args []string, stdin io.Reader, stdout, stderr io.Write
 	cmd.Writer = stdout
 	cmd.ErrWriter = stderr
 	if err := cmd.Run(context.Background(), args); err != nil {
-		_, _ = fmt.Fprintf(stderr, "tr: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, name+": %v\n", err)
 		return 1
 	}
 	return 0
@@ -58,7 +60,7 @@ func run(version string, args []string, stdin io.Reader, stdout, stderr io.Write
 
 func newApp(version string, stdin io.Reader, stdout io.Writer) *cli.Command {
 	return &cli.Command{
-		Name:            "tr",
+		Name:            name,
 		Version:         version,
 		Usage:           "translate or delete characters",
 		UsageText:       usageText,
@@ -110,15 +112,15 @@ func operands(c *cli.Command) (string, string, error) {
 
 // flagOption pairs a CLI flag name with the library option it enables.
 type flagOption struct {
-	name   string
 	option any
+	name   string
 }
 
 func flagOptions() []flagOption {
 	return []flagOption{
-		{flagDelete, command.TrDelete},
-		{flagSqueeze, command.TrSqueeze},
-		{flagComplement, command.TrComplement},
+		{name: flagDelete, option: command.TrDelete},
+		{name: flagSqueeze, option: command.TrSqueeze},
+		{name: flagComplement, option: command.TrComplement},
 	}
 }
 
